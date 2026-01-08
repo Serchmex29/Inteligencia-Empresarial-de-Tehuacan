@@ -5,225 +5,451 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Inteligencia Empresarial de Tehuacán | Actuaría, Finanzas y Ciencia de Datos</title>
   <meta name="description" content="Consultoría en Tehuacán, Puebla: Actuaría, Finanzas y Ciencia de Datos. Dashboards, modelos predictivos, riesgo y planeación financiera." />
+
   <style>
     :root{
-      --bg:#0b0f14; --card:#121a24; --text:#e7eef7; --muted:#b9c4d1;
-      --accent:#22c55e; --line:rgba(255,255,255,.12);
-      --radius:16px; --max:1080px;
+      --bg:#0b0f14;
+      --card:#121a24;
+      --text:#e7eef7;
+      --muted:#b9c4d1;
+      --accent:#22c55e;
+      --line:rgba(255,255,255,.12);
+      --radius:16px;
+      --max:1100px;
       --shadow:0 10px 30px rgba(0,0,0,.35);
       --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      --navH: 76px; /* altura aproximada de la barra para separar el contenido */
     }
+
     *{box-sizing:border-box}
-    body{margin:0;font-family:var(--font);background:radial-gradient(1200px 600px at 30% 0%, rgba(34,197,94,.18), transparent 60%), var(--bg); color:var(--text);}
+    html, body {height:100%}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:
+        radial-gradient(1200px 600px at 30% 0%, rgba(34,197,94,.16), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      padding-top: var(--navH); /* clave: evita que la barra "tape" el contenido */
+    }
+
     a{color:inherit;text-decoration:none}
     .wrap{max-width:var(--max);margin:0 auto;padding:28px 18px}
-    .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;background:rgba(11,15,20,.75);backdrop-filter: blur(10px);border-bottom:1px solid var(--line);z-index:10}
-    .nav .wrap{padding:14px 18px}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{
-  width:38px;height:38px;
-  border-radius:12px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.03);
-  display:grid;place-items:center;
-  overflow:hidden;
-}
-.logo img{
-  width:100%;
-  height:100%;
-  object-fit:contain; /* usa cover si quieres que rellene completo */
-  display:block;
-}
-    .links{display:flex;gap:14px;flex-wrap:wrap}
+
+    /* =========================
+       NAVBAR (fija + responsive)
+       ========================= */
+    .nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      height: var(--navH);
+      display:flex;
+      align-items:center;
+      background:rgba(11,15,20,.85);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+      z-index:999;
+    }
+    .nav .inner{
+      width:100%;
+      max-width:var(--max);
+      margin:0 auto;
+      padding:10px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .brand{display:flex;align-items:center;gap:12px;min-width:260px}
+    .logoBox{
+      width:56px;
+      height:48px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+    }
+    .logoBox img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+    }
+    .brandTitle{font-weight:800;line-height:1.1}
+    .brandSub{font-size:13px;color:var(--muted);margin-top:2px}
+
+    .navRight{display:flex;align-items:center;gap:10px}
+    .links{
+      display:flex;
+      gap:14px;
+      flex-wrap:nowrap;
+      align-items:center;
+    }
     .links a{color:var(--muted);font-size:14px}
     .links a:hover{color:var(--text)}
-    .hero{padding:44px 0 18px}
-    .grid{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}
-    @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
-    .card{background:linear-gradient(180deg, rgba(18,26,36,.9), rgba(18,26,36,.65));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
-    h1{font-size:38px;line-height:1.1;margin:0 0 10px}
-    @media (max-width: 520px){ h1{font-size:32px} }
+
+    .menuBtn{
+      display:none;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    /* Menú desplegable móvil */
+    .mobileMenu{
+      display:none;
+      position:fixed;
+      top: var(--navH);
+      left:0; right:0;
+      background:rgba(11,15,20,.95);
+      border-bottom:1px solid var(--line);
+      z-index:998;
+    }
+    .mobileMenu .mInner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:12px 18px 16px 18px;
+      display:grid;
+      gap:10px;
+    }
+    .mobileMenu a{
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      font-weight:600;
+    }
+
+    /* Estado abierto del menú */
+    body.menu-open .mobileMenu{display:block}
+
+    @media (max-width: 860px){
+      .links{display:none}
+      .menuBtn{display:inline-flex;align-items:center;gap:8px}
+      .brand{min-width:auto}
+    }
+
+    /* =========================
+       COMPONENTES
+       ========================= */
+    .card{
+      background:linear-gradient(180deg, rgba(18,26,36,.92), rgba(18,26,36,.70));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+    }
+
+    h1{font-size:40px;line-height:1.1;margin:0 0 10px}
+    h2{margin:0 0 12px;font-size:22px}
+    h3{margin:0 0 6px;font-size:16px}
     p{margin:0 0 10px;color:var(--muted);line-height:1.6}
+
+    .badge{
+      display:inline-block;
+      font-size:12px;
+      padding:6px 10px;
+      border:1px solid rgba(34,197,94,.35);
+      border-radius:999px;
+      background:rgba(34,197,94,.12);
+      color:var(--text);
+      margin-bottom:10px;
+    }
+
     .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    .btn{padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.04);font-weight:600}
+    .btn{
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      font-weight:700;
+      cursor:pointer;
+      display:inline-block;
+    }
     .btn:hover{background:rgba(255,255,255,.08)}
     .btn.primary{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.35)}
+
+    .hero{padding:28px 0 18px}
+    .grid{display:grid;grid-template-columns:1.35fr .65fr;gap:16px}
+    @media (max-width: 920px){ .grid{grid-template-columns:1fr} }
+
     .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-    .kpi{border:1px solid var(--line);border-radius:14px;padding:12px;background:rgba(0,0,0,.12)}
+    .kpi{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background:rgba(0,0,0,.12)
+    }
     .kpi b{display:block}
-    .section{padding:26px 0}
-    .section h2{margin:0 0 12px;font-size:22px}
+    .small{font-size:13px;color:var(--muted)}
+
+    .section{padding:20px 0}
     .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    @media (max-width: 900px){ .cols{grid-template-columns:1fr} }
-    .item{border:1px solid var(--line);border-radius:14px;padding:14px;background:rgba(0,0,0,.12)}
-    .item h3{margin:0 0 6px;font-size:16px}
+    @media (max-width: 920px){ .cols{grid-template-columns:1fr} }
+
+    .item{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:rgba(0,0,0,.12)
+    }
     .item p{margin:0;color:var(--muted);font-size:14px}
+
     .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-    @media (max-width: 900px){ .steps{grid-template-columns:1fr} }
-    .badge{display:inline-block;font-size:12px;padding:6px 10px;border:1px solid rgba(34,197,94,.35);border-radius:999px;background:rgba(34,197,94,.12);color:var(--text);margin-bottom:10px}
-    .footer{border-top:1px solid var(--line);padding:18px 0;color:var(--muted);font-size:13px}
-    .small{font-size:13px}
-    input, textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text);outline:none}
+    @media (max-width: 920px){ .steps{grid-template-columns:1fr} }
+
+    input, textarea{
+      width:100%;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      outline:none;
+    }
     textarea{min-height:120px;resize:vertical}
     label{display:block;margin:10px 0 6px;color:var(--muted);font-size:13px}
+
+    .footer{
+      border-top:1px solid var(--line);
+      padding:18px 0 26px;
+      color:var(--muted);
+      font-size:13px;
+    }
   </style>
 </head>
+
 <body>
 
-  <div class="nav">
-    <div class="wrap">
-      <div class="brand">
-        <div class="logo" aria-label="Logo"><span>IE</span></div>
-        <div class="logo" aria-label="Logo">
-          <img src="img/logo.png" alt="Logo Inteligencia Empresarial de Tehuacán" />
+  <!-- NAV -->
+  <header class="nav" role="banner">
+    <div class="inner">
+      <a class="brand" href="#top" aria-label="Ir al inicio">
+        <div class="logoBox" aria-label="Logo">
+          <!-- Coloca tu archivo en: img/Logo.png -->
+          <img src="img/Logo.png" alt="Logo Inteligencia Empresarial de Tehuacán">
+        </div>
         <div>
-          <div style="font-weight:800">Inteligencia Empresarial de Tehuacán</div>
-          <div class="small" style="color:var(--muted)">Actuaría • Finanzas • Ciencia de Datos</div>
+          <div class="brandTitle">Inteligencia Empresarial de Tehuacán</div>
+          <div class="brandSub">Actuaría • Finanzas • Ciencia de Datos</div>
         </div>
+      </a>
+
+      <div class="navRight">
+        <nav class="links" aria-label="Navegación principal">
+          <a href="#servicios">Servicios</a>
+          <a href="#metodo">Metodología</a>
+          <a href="#casos">Casos</a>
+          <a href="#nosotros">Nosotros</a>
+          <a href="#contacto">Contacto</a>
+        </nav>
+
+        <button class="menuBtn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu">
+          Menú
+        </button>
       </div>
-      <div class="links">
-        <a href="#servicios">Servicios</a>
-        <a href="#metodo">Metodología</a>
-        <a href="#casos">Casos</a>
-        <a href="#nosotros">Nosotros</a>
-        <a href="#contacto">Contacto</a>
-      </div>
+    </div>
+  </header>
+
+  <!-- MENÚ MÓVIL -->
+  <div class="mobileMenu" id="mobileMenu">
+    <div class="mInner">
+      <a href="#servicios" class="mLink">Servicios</a>
+      <a href="#metodo" class="mLink">Metodología</a>
+      <a href="#casos" class="mLink">Casos</a>
+      <a href="#nosotros" class="mLink">Nosotros</a>
+      <a href="#contacto" class="mLink">Contacto</a>
     </div>
   </div>
 
-  <div class="wrap hero">
-    <div class="grid">
-      <div class="card">
-        <span class="badge">Tehuacán, Puebla</span>
-        <h1>Decisiones empresariales basadas en datos</h1>
-        <p>Convertimos información dispersa en análisis accionables, dashboards ejecutivos y modelos para predecir, optimizar y controlar el riesgo.</p>
-        <div class="btns">
-          <!-- Cambia el número -->
-          <a class="btn primary" href="https://wa.me/52TU_NUMERO?text=Hola,%20quiero%20cotizar%20un%20proyecto%20de%20anal%C3%ADtica%20con%20Inteligencia%20Empresarial%20de%20Tehuac%C3%A1n." target="_blank" rel="noreferrer">Cotizar por WhatsApp</a>
-          <a class="btn" href="#contacto">Agendar diagnóstico</a>
-        </div>
-        <div class="kpis">
-          <div class="kpi"><b>Enfoque a negocio</b><span class="small" style="color:var(--muted)">Recomendaciones accionables</span></div>
-          <div class="kpi"><b>Medición y control</b><span class="small" style="color:var(--muted)">KPIs y seguimiento</span></div>
-          <div class="kpi"><b>Automatización</b><span class="small" style="color:var(--muted)">Menos trabajo manual</span></div>
-          <div class="kpi"><b>Rigor cuantitativo</b><span class="small" style="color:var(--muted)">Actuaría + datos</span></div>
-        </div>
-      </div>
+  <!-- CONTENIDO -->
+  <main id="top">
+    <div class="wrap hero">
+      <div class="grid">
+        <section class="card">
+          <span class="badge">Tehuacán, Puebla</span>
+          <h1>Decisiones empresariales basadas en datos</h1>
+          <p>Convertimos información dispersa en análisis accionables, dashboards ejecutivos y modelos para predecir, optimizar y controlar el riesgo.</p>
 
-      <div class="card">
-        <h2 style="margin-top:0">Qué resolvemos</h2>
-        <p class="small">Problemas típicos donde generamos impacto:</p>
-        <div class="item" style="margin-top:10px">
-          <h3>Rentabilidad</h3>
-          <p>Margen por producto/cliente, pricing y costos.</p>
-        </div>
-        <div class="item" style="margin-top:10px">
-          <h3>Riesgo</h3>
-          <p>Alertas tempranas, score y escenarios.</p>
-        </div>
-        <div class="item" style="margin-top:10px">
-          <h3>Dirección</h3>
-          <p>Dashboards ejecutivos claros y consistentes.</p>
-        </div>
-      </div>
-    </div>
-  </div>
+          <div class="btns">
+            <!-- CAMBIA TU NÚMERO AQUÍ -->
+            <a class="btn primary"
+               href="https://wa.me/52TU_NUMERO?text=Hola,%20quiero%20cotizar%20un%20proyecto%20con%20Inteligencia%20Empresarial%20de%20Tehuac%C3%A1n."
+               target="_blank" rel="noreferrer">Cotizar por WhatsApp</a>
 
-  <div class="wrap section" id="servicios">
-    <h2>Servicios</h2>
-    <div class="cols">
-      <div class="item">
-        <h3>Ciencia de Datos y Analítica</h3>
-        <p>Limpieza, segmentación, predicción, medición de impacto y automatización.</p>
-      </div>
-      <div class="item">
-        <h3>Actuaría y Gestión de Riesgo</h3>
-        <p>Modelos de incumplimiento, pérdidas esperadas, políticas, límites y escenarios.</p>
-      </div>
-      <div class="item">
-        <h3>Finanzas y Planeación</h3>
-        <p>Presupuesto, proyecciones, rentabilidad por producto/cliente y análisis de variaciones.</p>
-      </div>
-      <div class="item">
-        <h3>Dashboards (Tableau/Power BI)</h3>
-        <p>KPIs, tableros ejecutivos, integraciones y gobierno de métricas.</p>
-      </div>
-      <div class="item">
-        <h3>Optimización SQL y Datos</h3>
-        <p>Modelado, performance, trazabilidad, documentación y capacitación.</p>
-      </div>
-      <div class="item">
-        <h3>Paquetes por objetivo</h3>
-        <p>Diagnóstico (rápido), Implementación (end-to-end) y Acompañamiento (mensual).</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="wrap section" id="metodo">
-    <h2>Cómo trabajamos</h2>
-    <div class="steps">
-      <div class="item"><h3>1) Diagnóstico</h3><p>Objetivos, KPIs, fuentes y restricciones.</p></div>
-      <div class="item"><h3>2) Datos</h3><p>Extracción, limpieza y validaciones.</p></div>
-      <div class="item"><h3>3) Solución</h3><p>Análisis/modelos/tablero con métricas.</p></div>
-      <div class="item"><h3>4) Implementación</h3><p>Recomendaciones, despliegue y seguimiento.</p></div>
-    </div>
-  </div>
-
-  <div class="wrap section" id="casos">
-    <h2>Casos de uso</h2>
-    <div class="cols">
-      <div class="item"><h3>Ventas y demanda</h3><p>Pronóstico, estacionalidad, productos rentables.</p></div>
-      <div class="item"><h3>Marketing/CRM</h3><p>Tratado vs control, uplift e incrementalidad.</p></div>
-      <div class="item"><h3>Operación</h3><p>Inventario, rotación, quiebres y eficiencia.</p></div>
-      <div class="item"><h3>Riesgo</h3><p>Score, alertas tempranas y segmentación por riesgo.</p></div>
-      <div class="item"><h3>Finanzas</h3><p>Presupuesto, variaciones y planeación.</p></div>
-      <div class="item"><h3>Dirección</h3><p>KPIs ejecutivos con seguimiento periódico.</p></div>
-    </div>
-  </div>
-
-  <div class="wrap section" id="nosotros">
-    <h2>Nosotros</h2>
-    <div class="card">
-      <p>Somos una consultoría con formación cuantitativa (actuaría y analítica) enfocada en resultados medibles. Nuestro objetivo es que tus datos se conviertan en decisiones claras: qué hacer, por qué y con qué impacto esperado.</p>
-      <p class="small">Ubicación: Tehuacán, Puebla. Atención presencial y remota.</p>
-    </div>
-  </div>
-
-  <div class="wrap section" id="contacto">
-    <h2>Contacto</h2>
-    <div class="grid">
-      <div class="card">
-        <p><b>WhatsApp:</b> <span style="color:var(--muted)">+52 TU_NUMERO</span></p>
-        <p><b>Correo:</b> <span style="color:var(--muted)">tu_correo@dominio.com</span></p>
-        <p><b>Redes:</b> <span style="color:var(--muted)">@tuusuario</span></p>
-        <div class="btns">
-          <a class="btn primary" href="https://wa.me/52TU_NUMERO?text=Hola,%20quiero%20agendar%20un%20diagn%C3%B3stico%20para%20mi%20negocio." target="_blank" rel="noreferrer">Escribir por WhatsApp</a>
-        </div>
-      </div>
-      <div class="card">
-        <form action="#" method="post" onsubmit="alert('Formulario de ejemplo. Conecta esto a un servicio como Formspree o tu backend.'); return false;">
-          <label>Nombre</label>
-          <input type="text" placeholder="Tu nombre" required />
-          <label>Empresa / Giro</label>
-          <input type="text" placeholder="Ej. retail, servicios, fintech" />
-          <label>Mensaje</label>
-          <textarea placeholder="Cuéntanos qué necesitas (datos, dashboard, riesgo, proyección, etc.)" required></textarea>
-          <div class="btns" style="margin-top:12px">
-            <button class="btn primary" type="submit">Enviar</button>
-            <a class="btn" href="#servicios">Ver servicios</a>
+            <a class="btn" href="#contacto">Agendar diagnóstico</a>
           </div>
-        </form>
+
+          <div class="kpis">
+            <div class="kpi"><b>Enfoque a negocio</b><span class="small">Recomendaciones accionables</span></div>
+            <div class="kpi"><b>Medición y control</b><span class="small">KPIs y seguimiento</span></div>
+            <div class="kpi"><b>Automatización</b><span class="small">Menos trabajo manual</span></div>
+            <div class="kpi"><b>Rigor cuantitativo</b><span class="small">Actuaría + datos</span></div>
+          </div>
+        </section>
+
+        <aside class="card">
+          <h2 style="margin-top:0">Qué resolvemos</h2>
+          <p class="small">Problemas típicos donde generamos impacto:</p>
+
+          <div class="item" style="margin-top:10px">
+            <h3>Rentabilidad</h3>
+            <p>Margen por producto/cliente, pricing y costos.</p>
+          </div>
+
+          <div class="item" style="margin-top:10px">
+            <h3>Riesgo</h3>
+            <p>Alertas tempranas, score y escenarios.</p>
+          </div>
+
+          <div class="item" style="margin-top:10px">
+            <h3>Dirección</h3>
+            <p>Dashboards ejecutivos claros y consistentes.</p>
+          </div>
+        </aside>
       </div>
     </div>
-  </div>
 
-  <div class="wrap footer">
-    <div>© <span id="y"></span> Inteligencia Empresarial de Tehuacán. Todos los derechos reservados.</div>
-    <div class="small">Aviso de privacidad disponible a solicitud.</div>
-  </div>
+    <div class="wrap section" id="servicios">
+      <h2>Servicios</h2>
+      <div class="cols">
+        <div class="item">
+          <h3>Ciencia de Datos y Analítica</h3>
+          <p>Limpieza, segmentación, predicción, medición de impacto y automatización.</p>
+        </div>
+        <div class="item">
+          <h3>Actuaría y Gestión de Riesgo</h3>
+          <p>Modelos de incumplimiento, pérdidas esperadas, políticas, límites y escenarios.</p>
+        </div>
+        <div class="item">
+          <h3>Finanzas y Planeación</h3>
+          <p>Presupuesto, proyecciones, rentabilidad por producto/cliente y análisis de variaciones.</p>
+        </div>
+        <div class="item">
+          <h3>Dashboards (Tableau/Power BI)</h3>
+          <p>KPIs, tableros ejecutivos, integraciones y gobierno de métricas.</p>
+        </div>
+        <div class="item">
+          <h3>Optimización SQL y Datos</h3>
+          <p>Modelado, performance, trazabilidad, documentación y capacitación.</p>
+        </div>
+        <div class="item">
+          <h3>Paquetes por objetivo</h3>
+          <p>Diagnóstico, implementación end-to-end y acompañamiento mensual.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap section" id="metodo">
+      <h2>Metodología</h2>
+      <div class="steps">
+        <div class="item"><h3>1) Diagnóstico</h3><p>Objetivos, KPIs, fuentes y restricciones.</p></div>
+        <div class="item"><h3>2) Datos</h3><p>Extracción, limpieza y validaciones.</p></div>
+        <div class="item"><h3>3) Solución</h3><p>Análisis/modelos/tablero con métricas.</p></div>
+        <div class="item"><h3>4) Implementación</h3><p>Recomendaciones, despliegue y seguimiento.</p></div>
+      </div>
+    </div>
+
+    <div class="wrap section" id="casos">
+      <h2>Casos de uso</h2>
+      <div class="cols">
+        <div class="item"><h3>Ventas y demanda</h3><p>Pronóstico, estacionalidad, productos rentables.</p></div>
+        <div class="item"><h3>Marketing/CRM</h3><p>Tratado vs control, uplift e incrementalidad.</p></div>
+        <div class="item"><h3>Operación</h3><p>Inventario, rotación, quiebres y eficiencia.</p></div>
+        <div class="item"><h3>Riesgo</h3><p>Score, alertas tempranas y segmentación por riesgo.</p></div>
+        <div class="item"><h3>Finanzas</h3><p>Presupuesto, variaciones y planeación.</p></div>
+        <div class="item"><h3>Dirección</h3><p>KPIs ejecutivos con seguimiento periódico.</p></div>
+      </div>
+    </div>
+
+    <div class="wrap section" id="nosotros">
+      <h2>Nosotros</h2>
+      <div class="card">
+        <p>Somos una consultoría con formación cuantitativa (actuaría y analítica) enfocada en resultados medibles. Nuestro objetivo es que tus datos se conviertan en decisiones claras: qué hacer, por qué y con qué impacto esperado.</p>
+        <p class="small">Ubicación: Tehuacán, Puebla. Atención presencial y remota.</p>
+      </div>
+    </div>
+
+    <div class="wrap section" id="contacto">
+      <h2>Contacto</h2>
+      <div class="grid">
+        <div class="card">
+          <!-- CAMBIA TUS DATOS AQUÍ -->
+          <p><b>WhatsApp:</b> <span class="small">+52 TU_NUMERO</span></p>
+          <p><b>Correo:</b> <span class="small">tu_correo@dominio.com</span></p>
+          <p><b>Redes:</b> <span class="small">@tuusuario</span></p>
+
+          <div class="btns">
+            <a class="btn primary"
+               href="https://wa.me/52TU_NUMERO?text=Hola,%20quiero%20agendar%20un%20diagn%C3%B3stico%20para%20mi%20negocio."
+               target="_blank" rel="noreferrer">Escribir por WhatsApp</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <form action="#" method="post" onsubmit="alert('Formulario de ejemplo. Conéctalo a Formspree/Netlify Forms o tu backend.'); return false;">
+            <label>Nombre</label>
+            <input type="text" placeholder="Tu nombre" required />
+
+            <label>Empresa / Giro</label>
+            <input type="text" placeholder="Ej. retail, servicios, fintech" />
+
+            <label>Mensaje</label>
+            <textarea placeholder="Cuéntanos qué necesitas (datos, dashboard, riesgo, proyección, etc.)" required></textarea>
+
+            <div class="btns" style="margin-top:12px">
+              <button class="btn primary" type="submit">Enviar</button>
+              <a class="btn" href="#servicios">Ver servicios</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap footer">
+      <div>© <span id="y"></span> Inteligencia Empresarial de Tehuacán. Todos los derechos reservados.</div>
+      <div class="small">Aviso de privacidad disponible a solicitud.</div>
+    </div>
+  </main>
 
   <script>
+    // Año automático
     document.getElementById("y").textContent = new Date().getFullYear();
+
+    // Menú móvil
+    const btn = document.getElementById("menuBtn");
+    const links = document.querySelectorAll(".mLink");
+
+    btn.addEventListener("click", () => {
+      const open = document.body.classList.toggle("menu-open");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+
+    // Cierra menú al navegar
+    links.forEach(a => {
+      a.addEventListener("click", () => {
+        document.body.classList.remove("menu-open");
+        btn.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    // Cierra menú con ESC
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Escape"){
+        document.body.classList.remove("menu-open");
+        btn.setAttribute("aria-expanded", "false");
+      }
+    });
   </script>
+
 </body>
 </html>
